@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+            - develop
+    pull_request:
+        branches:
+            - main
+            - develop
+
+jobs:
+    ci:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            
+            - name: Setup Go
+              uses: actions/setup-go@v5
+              with:
+                  go-version-file: go.mod
+                  cache: true
+            
+            - name: Download Dependencies
+              run: go mod download
+
+            - name: Check Formatting
+              run: test -z "$(gofmt -s -d .)" # or use: gofmt -s -l
+
+            - name: Run Tests
+              run: go test -v -race ./...
+
+            - name: Build Go Binary
+              run: go build cmd/apiclient/main.go

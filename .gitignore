@@ -1,0 +1,115 @@
+# ==========================================
+# 1. Go Build & Executable Artifacts
+# ==========================================
+# Binaries at root or subdirectories
+*.exe
+*.exe-
+*.dll
+*.so
+*.dylib
+
+# Test binaries and coverage files
+*.test
+*.out
+coverage.txt
+profile.out
+
+# Binary output directories
+/bin/
+/dist/
+/build/
+
+# If you name your local output binary directly
+# (Replace 'app' with your binary name if you build in root)
+/main
+/app
+/tui-client
+
+# ==========================================
+# 2. Local App Data, History & Configs
+# (API Client testing/storage files)
+# ==========================================
+# Local SQLite DBs used for storing request history/collections during dev
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Local config & secret files
+.env
+.env.local
+.env.*.local
+config.local.yaml
+config.local.json
+
+# Local history logs and temporary exports
+/logs/
+*.log
+history.json
+history_local.json
+/tmp/
+/temp/
+
+# ==========================================
+# 3. Dependency & Vendor Directory
+# ==========================================
+# Uncomment vendor/ if you DON'T want to track vendored dependencies
+# vendor/
+
+# ==========================================
+# 4. IDEs and Code Editors
+# ==========================================
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+
+# JetBrains / GoLand
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim / Emacs
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+*~
+.#*
+\#*\#
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
+# 5. Operating System Generated Files
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ==========================================
+# 6. Release & Packaging Tools (GoReleaser)
+# ==========================================
+.goreleaser.dockerfile
