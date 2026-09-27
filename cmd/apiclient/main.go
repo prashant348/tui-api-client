@@ -2,25 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
+	"os"
+
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/prashant348/tui-api-client/internal/tui"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "go server is up & running!")
-}
-
 func main() {
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/", handler)
-
-	serverAddr := ":8080"
-
-	log.Printf("Server is running at http://localhost%s\n", serverAddr)
-
-	err := http.ListenAndServe(serverAddr, mux)
-	if err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+	p := tea.NewProgram(tui.InitialModel(), tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v\n", err)
+		os.Exit(1)
 	}
 }
