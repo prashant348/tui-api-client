@@ -12,6 +12,7 @@ import (
 type Model struct {
 	HTTPMethods components.HTTPMethods
 	URLInput    components.URLInput
+	BodyInput   components.BodyInput
 	SendButton  components.SendButton
 	Footer      components.Footer
 	FocusIndex  int
@@ -29,10 +30,12 @@ func InitialModel() *Model {
 	h.Focus()
 	s := components.NewSendButton(sendHTTPRequest)
 	f := components.NewFooter()
+	b := components.NewBodyInput()
 
 	return &Model{
 		HTTPMethods: h,
 		URLInput:    u,
+		BodyInput:   b,
 		SendButton:  s,
 		Footer:      f,
 		FocusIndex:  0,
@@ -44,7 +47,8 @@ func (m *Model) getFocusableComponents() map[int]FocusableComponent {
 	return map[int]FocusableComponent{
 		0: &m.HTTPMethods,
 		1: &m.URLInput,
-		2: &m.SendButton,
+		2: &m.BodyInput,
+		3: &m.SendButton,
 	}
 }
 
@@ -58,6 +62,10 @@ func (m *Model) FocusNext() {
 	}
 
 	m.FocusIndex = (m.FocusIndex + 1) % totalComponents
+
+	if m.FocusIndex == 2 && m.HTTPMethods.GetSelectedMethod() == "GET" {
+		m.FocusIndex++
+	}
 
 	if nextComp, exists := components[m.FocusIndex]; exists {
 		nextComp.Focus()
@@ -81,7 +89,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "tab":
 			m.FocusNext()
-		case "ctrl+c", "q":
+		case "ctrl+c":
 			return m, tea.Quit
 		}
 	}
@@ -92,6 +100,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case 1:
 		m.URLInput, cmd = m.URLInput.Update(msg)
 	case 2:
+		m.BodyInput, cmd = m.BodyInput.Update(msg)
+	case 3:
 		m.SendButton, cmd = m.SendButton.Update(msg)
 	}
 
@@ -101,10 +111,13 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // using Model instead of *Model, cause this func is only reading value not mutating its own state
 func (m Model) View() string {
 
+	selectedMethod := m.HTTPMethods.GetSelectedMethod()
+
 	ui := m.URLInput.View()
 	hm := m.HTTPMethods.View()
 	sb := m.SendButton.View()
 	fo := m.Footer.View()
+	bi := m.BodyInput.View()
 
 	// joining URLInput and SendButton Components horizontally
 	ui_plus_sb := lipgloss.JoinHorizontal(
@@ -113,12 +126,24 @@ func (m Model) View() string {
 		sb,
 	)
 
-	globalView := lipgloss.JoinVertical(
-		lipgloss.Left,
-		hm,
-		ui_plus_sb,
-		fo,
-	)
+	var globalView string
+
+	if selectedMethod != "GET" {
+		globalView = lipgloss.JoinVertical(
+			lipgloss.Left,
+			hm,
+			ui_plus_sb,
+			bi,
+			fo,
+		)
+	} else {
+		globalView = lipgloss.JoinVertical(
+			lipgloss.Left,
+			hm,
+			ui_plus_sb,
+			fo,
+		)
+	}
 
 	return globalView
 }

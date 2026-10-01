@@ -33,7 +33,7 @@ func (h HTTPMethods) IsFocused() bool {
 	return h.isFocused
 }
 
-func (h *HTTPMethods) getSelectedMethod() string {
+func (h *HTTPMethods) GetSelectedMethod() string {
 	return httpMethods[h.SelectedIndex]
 }
 
@@ -63,7 +63,7 @@ func (h *HTTPMethods) Update(msg tea.Msg) (HTTPMethods, tea.Cmd) {
 
 func (h HTTPMethods) View() string {
 
-	currMethod := h.getSelectedMethod()
+	currMethod := h.GetSelectedMethod()
 
 	methodStyle := lipgloss.NewStyle().
 		Border(lipgloss.HiddenBorder()).
