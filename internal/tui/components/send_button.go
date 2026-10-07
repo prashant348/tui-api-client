@@ -50,7 +50,7 @@ func (s *SendButton) Update(msg tea.Msg) (SendButton, tea.Cmd) {
 func (s SendButton) View() string {
 
 	buttonStyle := lipgloss.NewStyle().
-		Border(lipgloss.ThickBorder()).
+		Border(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("#4B5563")).
 		Padding(0, 1).Margin(0, 1)
 

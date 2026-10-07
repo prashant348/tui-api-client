@@ -60,7 +60,7 @@ func (b BodyInput) View() string {
 		Padding(0, 1)
 
 	bodyInputStyle := lipgloss.NewStyle().
-		Border(lipgloss.ThickBorder()).
+		Border(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("#4B5563")).
 		Padding(0, 1)
 
