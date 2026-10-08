@@ -7,17 +7,18 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/prashant348/tui-api-client/internal/tui/components"
+	keyvalueeditor "github.com/prashant348/tui-api-client/internal/tui/components/key_value_editor"
 )
 
 type Model struct {
-	HTTPMethods  components.HTTPMethods
-	URLInput     components.URLInput
-	BodyInput    components.BodyInput
-	HeadersInput components.HeadersInput
-	ParamsInput  components.ParamsInput
-	SendButton   components.SendButton
-	Footer       components.Footer
-	FocusIndex   int
+	HTTPMethods components.HTTPMethods
+	URLInput    components.URLInput
+	BodyInput   components.BodyInput
+	Headers     components.Headers
+	Params      components.Params
+	SendButton  components.SendButton
+	Footer      components.Footer
+	FocusIndex  int
 }
 
 // dummy function to simulate http request
@@ -33,18 +34,34 @@ func InitialModel() *Model {
 	s := components.NewSendButton(sendHTTPRequest)
 	f := components.NewFooter()
 	b := components.NewBodyInput()
-	hi := components.NewHeadersInput()
-	p := components.NewParamsInput()
+
+	headersConfig := keyvalueeditor.NewKeyValueEditorConfig(
+		"Headers: ",
+		"Key",
+		"Value",
+		3,
+		50,
+	)
+	hs := components.NewHeaders(headersConfig)
+
+	paramsConfig := keyvalueeditor.NewKeyValueEditorConfig(
+		"Params: ",
+		"Key",
+		"Value",
+		3,
+		50,
+	)
+	ps := components.NewParams(paramsConfig)
 
 	return &Model{
-		HTTPMethods:  h,
-		URLInput:     u,
-		BodyInput:    b,
-		HeadersInput: hi,
-		ParamsInput:  p,
-		SendButton:   s,
-		Footer:       f,
-		FocusIndex:   0,
+		HTTPMethods: h,
+		URLInput:    u,
+		BodyInput:   b,
+		Headers:     hs,
+		Params:      ps,
+		SendButton:  s,
+		Footer:      f,
+		FocusIndex:  0,
 	}
 }
 
@@ -54,8 +71,8 @@ func (m *Model) getFocusableComponents() map[int]FocusableComponent {
 		0: &m.HTTPMethods,
 		1: &m.URLInput,
 		2: &m.BodyInput,
-		3: &m.HeadersInput,
-		4: &m.ParamsInput,
+		3: &m.Headers,
+		4: &m.Params,
 		5: &m.SendButton,
 	}
 }
@@ -112,9 +129,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case 2:
 		m.BodyInput, cmd = m.BodyInput.Update(msg)
 	case 3:
-		m.HeadersInput, cmd = m.HeadersInput.Update(msg)
+		m.Headers, cmd = m.Headers.Update(msg)
 	case 4:
-		m.ParamsInput, cmd = m.ParamsInput.Update(msg)
+		m.Params, cmd = m.Params.Update(msg)
 	case 5:
 		m.SendButton, cmd = m.SendButton.Update(msg)
 	}
@@ -132,8 +149,8 @@ func (m Model) View() string {
 	sb := m.SendButton.View()
 	fo := m.Footer.View()
 	bi := m.BodyInput.View()
-	hi := m.HeadersInput.View()
-	pi := m.ParamsInput.View()
+	hs := m.Headers.View()
+	ps := m.Params.View()
 
 	// joining URLInput and SendButton Components horizontally
 	ui_plus_sb := lipgloss.JoinHorizontal(
@@ -150,8 +167,8 @@ func (m Model) View() string {
 			hm,
 			ui_plus_sb,
 			bi,
-			hi,
-			pi,
+			hs,
+			ps,
 			fo,
 		)
 	} else {
