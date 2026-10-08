@@ -12,9 +12,9 @@ func NewFooter() Footer {
 [Enter]      Send or Switch Key/Value focus
 [Right/Left] Change method
 [Ctrl+C]     Quit
-[Up/Down]    Switch header rows focus
-[Ctrl+A]     Add new header row
-[Ctrl+R]     Remove current header row`,
+[Up/Down]    Switch header/param rows focus
+[Ctrl+A]     Add new header/param row
+[Ctrl+R]     Remove current header/param row`,
 	}
 }
 

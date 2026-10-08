@@ -14,6 +14,7 @@ type Model struct {
 	URLInput     components.URLInput
 	BodyInput    components.BodyInput
 	HeadersInput components.HeadersInput
+	ParamsInput  components.ParamsInput
 	SendButton   components.SendButton
 	Footer       components.Footer
 	FocusIndex   int
@@ -33,12 +34,14 @@ func InitialModel() *Model {
 	f := components.NewFooter()
 	b := components.NewBodyInput()
 	hi := components.NewHeadersInput()
+	p := components.NewParamsInput()
 
 	return &Model{
 		HTTPMethods:  h,
 		URLInput:     u,
 		BodyInput:    b,
 		HeadersInput: hi,
+		ParamsInput:  p,
 		SendButton:   s,
 		Footer:       f,
 		FocusIndex:   0,
@@ -52,7 +55,8 @@ func (m *Model) getFocusableComponents() map[int]FocusableComponent {
 		1: &m.URLInput,
 		2: &m.BodyInput,
 		3: &m.HeadersInput,
-		4: &m.SendButton,
+		4: &m.ParamsInput,
+		5: &m.SendButton,
 	}
 }
 
@@ -68,6 +72,7 @@ func (m *Model) FocusNext() {
 	m.FocusIndex = (m.FocusIndex + 1) % totalComponents
 
 	if m.FocusIndex == 2 && m.HTTPMethods.GetSelectedMethod() == "GET" {
+		m.FocusIndex++
 		m.FocusIndex++
 		m.FocusIndex++
 	}
@@ -109,6 +114,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case 3:
 		m.HeadersInput, cmd = m.HeadersInput.Update(msg)
 	case 4:
+		m.ParamsInput, cmd = m.ParamsInput.Update(msg)
+	case 5:
 		m.SendButton, cmd = m.SendButton.Update(msg)
 	}
 
@@ -126,6 +133,7 @@ func (m Model) View() string {
 	fo := m.Footer.View()
 	bi := m.BodyInput.View()
 	hi := m.HeadersInput.View()
+	pi := m.ParamsInput.View()
 
 	// joining URLInput and SendButton Components horizontally
 	ui_plus_sb := lipgloss.JoinHorizontal(
@@ -143,6 +151,7 @@ func (m Model) View() string {
 			ui_plus_sb,
 			bi,
 			hi,
+			pi,
 			fo,
 		)
 	} else {
