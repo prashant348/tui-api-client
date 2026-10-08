@@ -30,7 +30,7 @@ func (e KeyValueEditor) IsFocused() bool {
 	return e.isFocused
 }
 
-func (e *KeyValueEditor) ShiftRowFocus(msg tea.Msg) {
+func (e *KeyValueEditor) ShiftRowFocus(key string) {
 	totalRows := len(e.Rows)
 	// there should be atleast 2 rows to shift focus across them
 	if totalRows <= 1 {
@@ -41,14 +41,11 @@ func (e *KeyValueEditor) ShiftRowFocus(msg tea.Msg) {
 		e.Rows[e.ActiveRowIndex].BlurRow()
 	}
 
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "up":
-			e.ActiveRowIndex = (e.ActiveRowIndex - 1 + totalRows) % totalRows
-		case "down":
-			e.ActiveRowIndex = (e.ActiveRowIndex + 1) % totalRows
-		}
+	switch key {
+	case "up":
+		e.ActiveRowIndex = (e.ActiveRowIndex - 1 + totalRows) % totalRows
+	case "down":
+		e.ActiveRowIndex = (e.ActiveRowIndex + 1) % totalRows
 	}
 
 	e.Rows[e.ActiveRowIndex].FocusRow()
@@ -109,7 +106,7 @@ func (e *KeyValueEditor) Update(msg tea.Msg) (KeyValueEditor, tea.Cmd) {
 		case "ctrl+r":
 			e.RemoveRow()
 		case "up", "down":
-			e.ShiftRowFocus(msg)
+			e.ShiftRowFocus(msg.String())
 			return *e, cmd
 		}
 	}

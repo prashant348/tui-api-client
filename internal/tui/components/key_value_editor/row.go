@@ -105,12 +105,12 @@ func (r *KeyValueRow) Update(msg tea.Msg) (KeyValueRow, tea.Cmd) {
 func (r KeyValueRow) View() string {
 
 	rowStyle := lipgloss.NewStyle().
-		Border(lipgloss.NormalBorder()).
+		// Border(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("#4B5563")).
 		Padding(0, 1)
 
 	rowFocusedStyle := lipgloss.NewStyle().
-		Border(lipgloss.ThickBorder()).
+		// Border(lipgloss.ThickBorder()).
 		BorderForeground(lipgloss.Color("#6f42c1")).
 		Padding(0, 1)
 

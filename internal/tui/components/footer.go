@@ -9,12 +9,13 @@ type Footer struct {
 func NewFooter() Footer {
 	return Footer{
 		Text: `[Tab]        Switch global focus
-[Enter]      Send or Switch Key/Value focus
-[Right/Left] Change method
-[Ctrl+C]     Quit
+[Enter]      Send or switch key/value focus
+[Right/Left] Change HTTP method
+[Shift+Tab]  Switch tabs
 [Up/Down]    Switch header/param rows focus
 [Ctrl+A]     Add new header/param row
-[Ctrl+R]     Remove current header/param row`,
+[Ctrl+R]     Remove current header/param row
+[Ctrl+C]     Quit`,
 	}
 }
 

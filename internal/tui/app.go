@@ -7,18 +7,19 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/prashant348/tui-api-client/internal/tui/components"
-	keyvalueeditor "github.com/prashant348/tui-api-client/internal/tui/components/key_value_editor"
+	// keyvalueeditor "github.com/prashant348/tui-api-client/internal/tui/components/key_value_editor"
 )
 
 type Model struct {
 	HTTPMethods components.HTTPMethods
 	URLInput    components.URLInput
-	BodyInput   components.BodyInput
-	Headers     components.Headers
-	Params      components.Params
-	SendButton  components.SendButton
-	Footer      components.Footer
-	FocusIndex  int
+	// BodyInput   components.BodyInput
+	// Headers     components.Headers
+	// Params      components.Params
+	SendButton components.SendButton
+	Navigation components.Navigation
+	Footer     components.Footer
+	FocusIndex int
 }
 
 // dummy function to simulate http request
@@ -33,35 +34,38 @@ func InitialModel() *Model {
 	h.Focus()
 	s := components.NewSendButton(sendHTTPRequest)
 	f := components.NewFooter()
-	b := components.NewBodyInput()
+	// b := components.NewBodyInput()
 
-	headersConfig := keyvalueeditor.NewKeyValueEditorConfig(
-		"Headers: ",
-		"Key",
-		"Value",
-		3,
-		50,
-	)
-	hs := components.NewHeaders(headersConfig)
+	// headersConfig := keyvalueeditor.NewKeyValueEditorConfig(
+	// 	"Headers: ",
+	// 	"Key",
+	// 	"Value",
+	// 	3,
+	// 	50,
+	// )
+	// hs := components.NewHeaders(headersConfig)
 
-	paramsConfig := keyvalueeditor.NewKeyValueEditorConfig(
-		"Params: ",
-		"Key",
-		"Value",
-		3,
-		50,
-	)
-	ps := components.NewParams(paramsConfig)
+	// paramsConfig := keyvalueeditor.NewKeyValueEditorConfig(
+	// 	"Params: ",
+	// 	"Key",
+	// 	"Value",
+	// 	3,
+	// 	50,
+	// )
+	// ps := components.NewParams(paramsConfig)
+
+	n := components.NewNavigation()
 
 	return &Model{
 		HTTPMethods: h,
 		URLInput:    u,
-		BodyInput:   b,
-		Headers:     hs,
-		Params:      ps,
-		SendButton:  s,
-		Footer:      f,
-		FocusIndex:  0,
+		// BodyInput:   b,
+		// Headers:     hs,
+		// Params:      ps,
+		SendButton: s,
+		Navigation: n,
+		Footer:     f,
+		FocusIndex: 0,
 	}
 }
 
@@ -70,10 +74,11 @@ func (m *Model) getFocusableComponents() map[int]FocusableComponent {
 	return map[int]FocusableComponent{
 		0: &m.HTTPMethods,
 		1: &m.URLInput,
-		2: &m.BodyInput,
-		3: &m.Headers,
-		4: &m.Params,
-		5: &m.SendButton,
+		// 2: &m.BodyInput,
+		// 3: &m.Headers,
+		// 4: &m.Params,
+		2: &m.Navigation,
+		3: &m.SendButton,
 	}
 }
 
@@ -90,8 +95,8 @@ func (m *Model) FocusNext() {
 
 	if m.FocusIndex == 2 && m.HTTPMethods.GetSelectedMethod() == "GET" {
 		m.FocusIndex++
-		m.FocusIndex++
-		m.FocusIndex++
+		// m.FocusIndex++
+		// m.FocusIndex++
 	}
 
 	if nextComp, exists := components[m.FocusIndex]; exists {
@@ -126,13 +131,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.HTTPMethods, cmd = m.HTTPMethods.Update(msg)
 	case 1:
 		m.URLInput, cmd = m.URLInput.Update(msg)
+	// case 2:
+	// 	m.BodyInput, cmd = m.BodyInput.Update(msg)
+	// case 3:
+	// 	m.Headers, cmd = m.Headers.Update(msg)
+	// case 4:
+	// 	m.Params, cmd = m.Params.Update(msg)
 	case 2:
-		m.BodyInput, cmd = m.BodyInput.Update(msg)
+		m.Navigation, cmd = m.Navigation.Update(msg)
 	case 3:
-		m.Headers, cmd = m.Headers.Update(msg)
-	case 4:
-		m.Params, cmd = m.Params.Update(msg)
-	case 5:
 		m.SendButton, cmd = m.SendButton.Update(msg)
 	}
 
@@ -148,9 +155,10 @@ func (m Model) View() string {
 	hm := m.HTTPMethods.View()
 	sb := m.SendButton.View()
 	fo := m.Footer.View()
-	bi := m.BodyInput.View()
-	hs := m.Headers.View()
-	ps := m.Params.View()
+	// bi := m.BodyInput.View()
+	// hs := m.Headers.View()
+	// ps := m.Params.View()
+	ng := m.Navigation.View()
 
 	// joining URLInput and SendButton Components horizontally
 	ui_plus_sb := lipgloss.JoinHorizontal(
@@ -166,9 +174,10 @@ func (m Model) View() string {
 			lipgloss.Left,
 			hm,
 			ui_plus_sb,
-			bi,
-			hs,
-			ps,
+			// bi,
+			// hs,
+			// ps,
+			ng,
 			fo,
 		)
 	} else {
