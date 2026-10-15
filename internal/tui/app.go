@@ -2,15 +2,18 @@ package tui
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/prashant348/tui-api-client/internal/tui/components"
+	"github.com/prashant348/tui-api-client/internal/tui/components/dropdown"
 	// keyvalueeditor "github.com/prashant348/tui-api-client/internal/tui/components/key_value_editor"
 )
 
 type Model struct {
+	Dropdown    dropdown.Dropdown
 	HTTPMethods components.HTTPMethods
 	URLInput    components.URLInput
 	// BodyInput   components.BodyInput
@@ -55,8 +58,16 @@ func InitialModel() *Model {
 	// ps := components.NewParams(paramsConfig)
 
 	n := components.NewNavigation()
+	d, err := dropdown.NewDropdown(
+		[]string{"GET", "POST", "PUT", "DELETE", "", "  ", "PATCH", " "},
+		-10,
+	)
+	if err != nil {
+		log.Fatal("dropdown error")
+	}
 
 	return &Model{
+		Dropdown:    d,
 		HTTPMethods: h,
 		URLInput:    u,
 		// BodyInput:   b,
@@ -79,6 +90,7 @@ func (m *Model) getFocusableComponents() map[int]FocusableComponent {
 		// 4: &m.Params,
 		2: &m.Navigation,
 		3: &m.SendButton,
+		4: &m.Dropdown,
 	}
 }
 
@@ -141,6 +153,8 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.Navigation, cmd = m.Navigation.Update(msg)
 	case 3:
 		m.SendButton, cmd = m.SendButton.Update(msg)
+	case 4:
+		m.Dropdown, cmd = m.Dropdown.Update(msg)
 	}
 
 	return m, cmd
@@ -159,6 +173,7 @@ func (m Model) View() string {
 	// hs := m.Headers.View()
 	// ps := m.Params.View()
 	ng := m.Navigation.View()
+	dd := m.Dropdown.View()
 
 	// joining URLInput and SendButton Components horizontally
 	ui_plus_sb := lipgloss.JoinHorizontal(
@@ -179,6 +194,7 @@ func (m Model) View() string {
 			// ps,
 			ng,
 			fo,
+			dd,
 		)
 	} else {
 		globalView = lipgloss.JoinVertical(
@@ -186,6 +202,7 @@ func (m Model) View() string {
 			hm,
 			ui_plus_sb,
 			fo,
+			dd,
 		)
 	}
 
